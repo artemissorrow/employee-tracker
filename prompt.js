@@ -4,16 +4,12 @@ const figlet = require('figlet');
 
 const connection = mysql.createConnection({
   host: 'localhost',
-
   port: 3306,
-
   user: 'root',
   password: 'I<3Bats',
-
   database: 'employeeDB',
+});
 
-  start();
-})
 
 const start = () => {
   console.log(figlet.textSync('employee'))
@@ -45,14 +41,14 @@ const mainMenu = () => {
       name: 'mainMenu'
     })
     .then(answer => {
-      switch (answer) {
+      console.log(answer);
+      switch (answer.mainMenu) {
         case 'View All Employees':
           connection.query('SELECT employees.id, employees.first_name AS "First Name", employees.last_name AS "Last Name", role.title, role.salary, department.name AS "Department" FROM employees JOIN role ON role.id = employees.role_id JOIN department ON department.id = role.department_id;',
             (err, res) => {
               if (err) throw err;
               console.table(res);
             })
-          mainMenu();
           break;
         case 'View Employees by Department':
           connection.query('SELECT department.name AS "Department", employees.first_name AS "First Name", employees.last_name AS "Last Name", role.title, role.salary FROM department JOIN role ON department.id = role.department_id JOIN employees ON role.id = employees.role_id;',
@@ -60,7 +56,6 @@ const mainMenu = () => {
               if (err) throw err;
               console.table(res);
             })
-          mainMenu();
           break;
         case 'View Employees by Manager':
           mainMenu();
@@ -87,6 +82,7 @@ const mainMenu = () => {
           connection.end();
           break;
         default:
+          console.log('broken');
           break;
       };
     }
@@ -159,3 +155,5 @@ const mainMenu = () => {
         })
   }
 };
+
+start();
